@@ -1,30 +1,20 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, get } from "firebase/database";
-import express from 'express'; 
+import express from 'express';
+import dotenv from 'dotenv';
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyAG7PieLa3L4xfe7x7AtW68YgI_Pw-xArI",
-  authDomain: "cash-flow-compass.firebaseapp.com",
-  databaseURL: "https://cash-flow-compass-default-rtdb.firebaseio.com",
-  projectId: "cash-flow-compass",
-  storageBucket: "cash-flow-compass.appspot.com",
-  messagingSenderId: "511858751589",
-  appId: "1:511858751589:web:aa37dddc689bfc5384ae8c",
-  measurementId: "G-XN46QBPYDE"
-};
+dotenv.config();
+console.log("Firebase Config:", process.env.firebaseConfig);
+const firebaseConfig = JSON.parse(process.env.firebaseConfig); // Parse the string into an object
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
-
-const server = express(); // Corrected express initialization
+const server = express();
 
 server.get("/bulk", (req, res) => {
   const transactionsRef = ref(database, `transactions/${req.accountno}`);
   get(transactionsRef)
-
     .then((snapshot) => {
       const val = snapshot.val();
       res.json({ message: val });
